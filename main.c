@@ -11,12 +11,12 @@ void up_triangle(double **a, int n, int m, int *cnt)
     *cnt = 0;
     double tmp, mult;
     for (int i = 0; i < n - 1; ++i) {
-        // Меняем местами i-ую строку с той,
-        //у который ненулевой элемент i-го столбца
+        // Swapping i-th string whith the string,
+        //that has a non-zero element in column i
         ind = i;
         while (a[ind][i] == 0 && ind < n) {
-            ++ind; //Так как задана невырожденная матрица,
-            // такой индекс найдется
+            ++ind; //Since the matrix is nondegenerate,
+            // such element exists
         }
         if (ind != i) {
             *cnt = (*cnt + i - ind) % 2;
@@ -26,8 +26,8 @@ void up_triangle(double **a, int n, int m, int *cnt)
                 a[i][j] = tmp;
             }
         }
-        //Вычитаем из всех последующих строк i-ую,
-        // умноженную на a[k][i]/a[i][i]
+        //Substracting from subsequent strings i-th string,
+        // multiplied by a[k][i]/a[i][i]
         for(int k = i + 1; k < n; ++k) {
             mult = a[k][i] / a[i][i];
             for (int j = i; j < m; ++j) {
@@ -44,9 +44,8 @@ void up_triangle_modified(double **a, int n, int m, int *cnt, int *permutations)
     *cnt = 0;
     double tmp, mult;
     for (int i = 0; i < n - 1; ++i) {
-        /* Ищем максимальный по модулю элемент и
-            меняем местами i-ую строку и столбец с теми, где расположен
-                максимальный элемент */
+        /* Looking for a maximum element and 
+            swapping i-th string with the maximum element string */
         ind_c = i;
         ind_r = i;
         double maximum = a[i][i];
@@ -60,7 +59,7 @@ void up_triangle_modified(double **a, int n, int m, int *cnt, int *permutations)
             }
         }
         *cnt = (*cnt + 2 * i - ind_c - ind_r) % 2;
-        //Запоминаем, какие столбцы менялись местами
+        //Remembering, wich columns were swapped
         itmp = permutations[i];
         permutations[i] = permutations[ind_c];
         permutations[ind_c] = itmp;
@@ -147,10 +146,6 @@ double *iterations_mod(double **a, int n, double *f, double eps, double w)
     while (p > eps) {
         p = 0;
         ++count;
-        //printf("%d ", ++k);
-        //if (k > 5) {
-            //break;
-        //}
         for (int i = 0; i < n; ++i) {
             sum1 = 0;
             sum2 = 0;
@@ -162,13 +157,10 @@ double *iterations_mod(double **a, int n, double *f, double eps, double w)
             }
             x_next[i] = sum1 + sum2 + f[i] * w / a[i][i] - x_prev[i] * (w - 1);
             p += fabs(x_next[i] - x_prev[i]);
-            //printf("%lf ", x_next[i]);
         }
-        //printf("\n");
         for (int i = 0; i < n; ++i) {
             x_prev[i] = x_next[i];
         }
-        //printf("p = %lf\n", p);
     }
     printf("Count of iterations: %d\n", count);
     return x_next;
@@ -229,7 +221,7 @@ int main(void)
     int i, j, n, flag;
     printf("Put the value of n\n");
     scanf("%d", &n);
-    // Выделяем память под матрицу А, вектор-функцию и расширенную матрицу
+    // Allocating memory for matrixes
     double **a, **b;
     a = m_allocate(n, n);
     b = m_allocate(n, n + 1);
@@ -274,10 +266,10 @@ int main(void)
         }
         printf("\n");
     }
-    //Вычисление определителя
+    //Calculation of the determinant
     printf("det(A) = %lf\n", det_count(a, n));
 
-    //Вычисление обратной матрицы
+    //Calculating the inversed matrix
     double **c = m_allocate(n, 2 * n);
     for (i = 0; i < n; ++i) {
         for (j = 0; j < n; ++j) {
